@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"log"
@@ -8,7 +9,7 @@ import (
 	"time"
 )
 
-type post struct {
+type Post struct {
 	Title       string `xml:"title" json:"title"`
 	Slug        string `xml:"-" json:"slug"`
 	Description string `xml:"description" json:"description"`
@@ -18,12 +19,12 @@ type post struct {
 }
 
 type RssChannel struct {
-	Title         string    `xml:"title"`
-	Description   string    `xml:"description"`
-	Link          string    `xml:"link"`
-	LastBuildDate time.Time `xml:"lastBuildDate"`
-	Language      string    `xml:"language"`
-	Items         []post    `xml:"items"`
+	Title         string    `xml:"title" json:"title"`
+	Description   string    `xml:"description" json:"description"`
+	Link          string    `xml:"link" json:"link"`
+	LastBuildDate time.Time `xml:"lastBuildDate" json:"-"`
+	Language      string    `xml:"language" json:"language"`
+	Items         []Post    `xml:"items" json:"items"`
 }
 
 func readInputFile(filePath string) ([]byte, error) {
@@ -49,34 +50,41 @@ func writeFeedFile(rssFeed []byte) error {
 	return nil
 }
 
-func generateXML(fileContent []byte) ([]byte, error) {
-	xmlData, err := xml.MarshalIndent(fileContent, "", "    ")
+func generateXMLFromJSON(jsonData []byte) ([]byte, error) {
+	rssFeed := RssChannel{}
+	err := json.Unmarshal(jsonData, &rssFeed)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("%v\n", rssFeed.Items[0].Title)
+	xmlData, err := xml.MarshalIndent(rssFeed, "", "    ")
 	if err != nil {
 		return nil, err
 	}
 
-	rssFeed := []byte(xml.Header + string(xmlData))
+	xmlFeed := []byte(xml.Header + string(xmlData))
 
-	fmt.Println("RSS feed generated and saved to feed.xml.")
-
-	return rssFeed, nil
+	return xmlFeed, nil
 }
 
 func app() error {
+
 	filePath := "internal/data/test-data.json"
 	fileContent, err := readInputFile(filePath)
 	if err != nil {
 		log.Fatalf("unable to read file: %v", err)
 	}
 
-	xmlData, err := generateXML(fileContent)
+	xmlData, err := generateXMLFromJSON(fileContent)
 	if err != nil {
 		return err
 	}
+
 	err = writeFeedFile(xmlData)
 	if err != nil {
 		return err
 	}
+	fmt.Println("RSS feed generated and saved to feed.xml.")
 	return nil
 }
 

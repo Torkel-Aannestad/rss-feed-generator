@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RssChannel>
+    <title>TorkelAannestad.com developer blog</title>
+    <description>My thought on programming, recent discoveries and learnings.</description>
+    <link>https://torkelaannestad.com/posts</link>
+    <lastBuildDate>0001-01-01T00:00:00Z</lastBuildDate>
+    <language>en-US</language>
+    <items>
+        <title>Behind the Scenes: Building This Website</title>
+        <description>I&#39;m peeling back the curtain to give you a peek into the technologies and decisions that brought this site to life.</description>
+        <link></link>
+        <pubDate>2024-11-12T08: 00: 00Z</pubDate>
+    </items>
+    <items>
+        <title>Some other post</title>
+        <description>This is just a text for the article.</description>
+        <link></link>
+        <pubDate>2024-10-08T08:00:00Z</pubDate>
+    </items>
+</RssChannel>

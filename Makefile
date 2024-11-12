@@ -1,5 +1,3 @@
-include .env
-
 ## help: available commands
 .PHONY: help
 help:
@@ -9,7 +7,7 @@ help:
 ## run/app: run cli
 .PHONY: run/app
 run/app:
-	@./bin/cli
+	@./bin/rss-feed-generator-cli
 
 # ==================================================================================== #
 # BUILD
