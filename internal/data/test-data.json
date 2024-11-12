@@ -1,0 +1,22 @@
+{
+    "title": "TorkelAannestad.com developer blog",
+    "description": "My thought on programming, recent discoveries and learnings.",
+    "link": "https://torkelaannestad.com/posts",
+    "language": "en-US",
+    "items": [
+        {
+            "title": "Behind the Scenes: Building This Website",
+            "slug": "behind-the-scenes",
+            "description": "I'm peeling back the curtain to give you a peek into the technologies and decisions that brought this site to life.",
+            "date": "November,2024",
+            "pubDate": "2024-11-12T08: 00: 00Z"
+        },
+        {
+            "title": "Some other post",
+            "slug": "some-other-post",
+            "description": "This is just a text for the article.",
+            "date": "Oktober, 2024",
+            "pubDate": "2024-10-08T08:00:00Z"
+        }
+    ]
+}
