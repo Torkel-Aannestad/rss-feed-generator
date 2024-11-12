@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -34,8 +35,8 @@ func readInputFile(filePath string) ([]byte, error) {
 	}
 	return body, nil
 }
-func writeFeedFile(rssFeed []byte) error {
-	file, err := os.Create("feed.xml")
+func writeFeedFile(rssFeed []byte, outputFileName string) error {
+	file, err := os.Create(outputFileName)
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 		return err
@@ -67,7 +68,31 @@ func generateXMLFromJSON(jsonData []byte) ([]byte, error) {
 	return xmlFeed, nil
 }
 
+func validateInpud(inputFilePath string) error {
+	if inputFilePath == "" {
+		fmt.Println("Please provide a filepath for input file. Example: somedirectory/data.json")
+		return fmt.Errorf("please provide a filepath for input file")
+	}
+	_, err := os.Stat(inputFilePath)
+	if os.IsNotExist(err) {
+		fmt.Println("path does not exist")
+		return fmt.Errorf("path does not exist")
+	} else if err != nil {
+		fmt.Printf("unable to access the path: %v\n", inputFilePath)
+		return err
+	}
+	return nil
+}
+
 func app() error {
+	inputFilePath := flag.String("input-filepath", "", "example: somedirectory/data.json")
+	outputFileName := flag.String("output-filename", "feed.xml", "feed.xml")
+
+	flag.Parse()
+	err := validateInpud(*inputFilePath)
+	if err != nil {
+		os.Exit(0)
+	}
 
 	filePath := "internal/data/test-data.json"
 	fileContent, err := readInputFile(filePath)
@@ -80,7 +105,7 @@ func app() error {
 		return err
 	}
 
-	err = writeFeedFile(xmlData)
+	err = writeFeedFile(xmlData, *outputFileName)
 	if err != nil {
 		return err
 	}
