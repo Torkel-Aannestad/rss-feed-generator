@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -35,8 +36,12 @@ func readInputFile(filePath string) ([]byte, error) {
 	}
 	return body, nil
 }
-func writeFeedFile(rssFeed []byte, outputFileName string) error {
-	file, err := os.Create(outputFileName)
+func writeFeedFile(rssFeed []byte, outputFileName, outputFilePath string) error {
+	filepath := outputFileName
+	if outputFilePath != "" {
+		filepath = fmt.Sprintf("%s/%s", outputFilePath, outputFileName)
+	}
+	file, err := os.Create(filepath)
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 		return err
@@ -68,10 +73,11 @@ func generateXMLFromJSON(jsonData []byte) ([]byte, error) {
 	return xmlFeed, nil
 }
 
-func validateInpud(inputFilePath string) error {
+func validateInput(inputFilePath string, outputFilePath string) error {
+	//inputFilePath
 	if inputFilePath == "" {
 		fmt.Println("Please provide a filepath for input file. Example: somedirectory/data.json")
-		return fmt.Errorf("please provide a filepath for input file")
+		return errors.New("error")
 	}
 	_, err := os.Stat(inputFilePath)
 	if os.IsNotExist(err) {
@@ -81,21 +87,38 @@ func validateInpud(inputFilePath string) error {
 		fmt.Printf("unable to access the path: %v\n", inputFilePath)
 		return err
 	}
+
+	//outputFilePath
+	if outputFilePath == "" {
+		return nil
+	}
+	info, err := os.Stat(outputFilePath)
+	if err != nil {
+		fmt.Printf("unable to access the path: %v", err)
+		return err
+
+	}
+
+	if !info.IsDir() {
+		fmt.Println("Path is a not a valid directory.")
+		return errors.New("error")
+	}
+
 	return nil
 }
 
 func app() error {
 	inputFilePath := flag.String("input-filepath", "", "example: somedirectory/data.json")
+	outputFilePath := flag.String("output-filepath", "", "current working directory")
 	outputFileName := flag.String("output-filename", "feed.xml", "feed.xml")
 
 	flag.Parse()
-	err := validateInpud(*inputFilePath)
+	err := validateInput(*inputFilePath, *outputFilePath)
 	if err != nil {
 		os.Exit(0)
 	}
 
-	filePath := "internal/data/test-data.json"
-	fileContent, err := readInputFile(filePath)
+	fileContent, err := readInputFile(*inputFilePath)
 	if err != nil {
 		log.Fatalf("unable to read file: %v", err)
 	}
@@ -105,7 +128,7 @@ func app() error {
 		return err
 	}
 
-	err = writeFeedFile(xmlData, *outputFileName)
+	err = writeFeedFile(xmlData, *outputFileName, *outputFilePath)
 	if err != nil {
 		return err
 	}

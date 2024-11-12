@@ -1,3 +1,1 @@
-- flags: input output
-- read input function
-- JSON-data embeded for test
+- improve input validation
