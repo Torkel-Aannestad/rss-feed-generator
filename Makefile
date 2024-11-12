@@ -18,6 +18,7 @@ run/app:
 build/app:
 	@echo 'Building cmd/app...'
 	go build  -o=./bin/rss-feed-generator ./cmd/cli
+	cp ./bin/rss-feed-generator ~/go/bin/rss-feed-generator
 
 # move script to torkel.dev repo
 .PHONY: cp/bin

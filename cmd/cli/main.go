@@ -62,6 +62,13 @@ func generateXMLFromJSON(jsonData []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	//set LastBuildDate
+	rssFeed.LastBuildDate = time.Now().UTC()
+	//set RSSLink
+	for i := range rssFeed.Items {
+		rssFeed.Items[i].RSSLink = fmt.Sprintf("%s/%s", rssFeed.Link, rssFeed.Items[i].Slug)
+	}
+
 	xmlData, err := xml.MarshalIndent(rssFeed, "", "    ")
 	if err != nil {
 		return nil, err
@@ -131,7 +138,7 @@ func app() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("RSS feed generated and saved to feed.xml.")
+	fmt.Println("RSS feed generated and saved")
 	return nil
 }
 
