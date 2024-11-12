@@ -62,7 +62,6 @@ func generateXMLFromJSON(jsonData []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("%v\n", rssFeed.Items[0].Title)
 	xmlData, err := xml.MarshalIndent(rssFeed, "", "    ")
 	if err != nil {
 		return nil, err

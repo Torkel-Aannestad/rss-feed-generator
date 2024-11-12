@@ -7,7 +7,7 @@ help:
 ## run/app: run cli
 .PHONY: run/app
 run/app:
-	@./bin/rss-feed-generator-cli
+	@./bin/rss-feed-generator
 
 # ==================================================================================== #
 # BUILD
@@ -17,8 +17,15 @@ run/app:
 .PHONY: build/app
 build/app:
 	@echo 'Building cmd/app...'
-	go build  -o=./bin/rss-feed-generator-cli ./cmd/cli
+	go build  -o=./bin/rss-feed-generator ./cmd/cli
 
+# move script to torkel.dev repo
+.PHONY: cp/bin
+cp/bin:
+	@echo 'copying binary to ~/go/bin'
+	cp ./bin/rss-feed-generator ~/go/bin/rss-feed-generator
+	
+	
 
 ## audit: run quality control
 .PHONY: audit
